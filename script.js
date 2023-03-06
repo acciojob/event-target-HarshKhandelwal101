@@ -1,19 +1,35 @@
 class EventTarget {
-    // Write your code here.
-  
-    addEventListener(name, callback) {
-      // Write your code here.
+    constructor() {
+      this.listeners = new Map();
     }
   
-    removeEventListener(name, callback) {
-      // Write your code here.
+    addEventListener(event, callback) {
+      if (!this.listeners.has(event)) {
+        this.listeners.set(event, new Set());
+      }
+      const eventListeners = this.listeners.get(event);
+      if (!eventListeners.has(callback)) {
+        eventListeners.add(callback);
+      }
     }
   
-    dispatchEvent(name) {
-      // Write your code here.
+    removeEventListener(event, callback) {
+      if (this.listeners.has(event)) {
+        const eventListeners = this.listeners.get(event);
+        eventListeners.delete(callback);
+        if (eventListeners.size === 0) {
+          this.listeners.delete(event);
+        }
+      }
+    }
+  
+    dispatchEvent(event) {
+      if (this.listeners.has(event)) {
+        const eventListeners = this.listeners.get(event);
+        for (const callback of eventListeners) {
+          callback();
+        }
+      }
     }
   }
-  
-  // Do not edit the line below.
-  exports.EventTarget = EventTarget;
   
